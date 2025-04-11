@@ -14,7 +14,7 @@
     "export": "next export",
     "build:export": "npm run build && npm run export",
     "build:vercel": "NODE_OPTIONS=--max_old_space_size=4096 next build",
-    "build:prod": "./static-export.sh",
+    "build:prod": "./simple-static-export.sh",
     "start": "next start",
     "lint": "next lint",
     "setup": "node scripts/setup.js",
