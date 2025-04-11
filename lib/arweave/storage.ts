@@ -4,6 +4,9 @@ import arweave from "./client";
 // Use the provided wallet address
 const WALLET_ADDRESS = "0fC-uw2gmuucfowm2GGM8NFYjiBIcwFXG-QHsCRvS28";
 
+// Check if we're in a browser environment
+const isBrowser = typeof window !== 'undefined';
+
 /**
  * Upload question data to Arweave
  * This function handles storing question data permanently on Arweave
@@ -13,7 +16,7 @@ export async function storeQuestionOnArweave(questionData: any): Promise<string 
     console.log('Storing question data on Arweave:', questionData);
     
     // Check if ArConnect is available
-    if (typeof window !== 'undefined' && 'arweaveWallet' in window) {
+    if (isBrowser && 'arweaveWallet' in window) {
       try {
         // Create transaction with ArConnect
         return await uploadWithArConnect(questionData, Collections.QUESTIONS);
@@ -116,12 +119,16 @@ async function mockArweaveUpload(collection: string, data: any): Promise<string>
   
   // In production, the data would be uploaded to Arweave via Bundlr
   // For testing, we'll store it in localStorage
-  if (typeof window !== 'undefined') {
-    const arweaveStorage = localStorage.getItem('arweaveStorage') || '{}';
-    const storage = JSON.parse(arweaveStorage);
-    
-    storage[mockTxId] = arweaveData;
-    localStorage.setItem('arweaveStorage', JSON.stringify(storage));
+  if (isBrowser) {
+    try {
+      const arweaveStorage = localStorage.getItem('arweaveStorage') || '{}';
+      const storage = JSON.parse(arweaveStorage);
+      
+      storage[mockTxId] = arweaveData;
+      localStorage.setItem('arweaveStorage', JSON.stringify(storage));
+    } catch (error) {
+      console.error('Error accessing localStorage:', error);
+    }
   }
   
   return mockTxId;
@@ -135,7 +142,7 @@ export async function getDataFromArweave(transactionId: string): Promise<any | n
     console.log('Getting data from Arweave with transaction ID:', transactionId);
     
     // Try to fetch from real Arweave
-    if (typeof window !== 'undefined') {
+    if (isBrowser) {
       try {
         // Fetch from Arweave gateway
         const response = await fetch(`https://arweave.net/${transactionId}`);
@@ -148,11 +155,15 @@ export async function getDataFromArweave(transactionId: string): Promise<any | n
       }
       
       // Fallback to mock implementation
-      const arweaveStorage = localStorage.getItem('arweaveStorage') || '{}';
-      const storage = JSON.parse(arweaveStorage);
-      
-      if (storage[transactionId]) {
-        return storage[transactionId];
+      try {
+        const arweaveStorage = localStorage.getItem('arweaveStorage') || '{}';
+        const storage = JSON.parse(arweaveStorage);
+        
+        if (storage[transactionId]) {
+          return storage[transactionId];
+        }
+      } catch (error) {
+        console.error('Error accessing localStorage:', error);
       }
     }
     

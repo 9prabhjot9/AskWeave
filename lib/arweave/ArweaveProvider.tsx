@@ -1,8 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import StorageService from '@/lib/storage';
 import { isArConnectAvailable } from './wallet';
+import StorageService from '@/lib/storage';
+
+// Check if we're in a browser environment
+const isBrowser = typeof window !== 'undefined';
 
 // Interface for ArweaveContext
 interface ArweaveContextType {
@@ -25,7 +28,7 @@ export function ArweaveProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize function
   const initialize = async () => {
-    if (isInitialized) return;
+    if (isInitialized || !isBrowser) return;
     
     try {
       // Check for ArConnect
@@ -44,6 +47,8 @@ export function ArweaveProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize on mount
   useEffect(() => {
+    if (!isBrowser) return;
+    
     initialize();
     
     // Check for ArConnect changes

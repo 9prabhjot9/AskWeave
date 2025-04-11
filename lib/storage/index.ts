@@ -4,19 +4,30 @@ import { Collections } from '../arweave/weavedb';
 // Re-export Collections enum
 export { Collections };
 
+// Check if we're in a browser environment
+const isBrowser = typeof window !== 'undefined';
+
 // Storage instance
 let db: any = null;
+let initialized = false;
 
 /**
  * Initialize storage
  * @returns A promise that resolves to the storage instance
  */
 export async function initStorage(): Promise<any> {
+  if (!isBrowser) {
+    console.log('Not initializing storage in server-side context');
+    initialized = true;
+    return null;
+  }
+
   try {
     if (db) return db;
     
     // Initialize localStorage database
     db = await initLocalStorage();
+    initialized = true;
     return db;
   } catch (error) {
     console.error('Error initializing storage:', error);
@@ -29,9 +40,26 @@ export async function initStorage(): Promise<any> {
  * @returns The initialized storage instance
  */
 export function getDB(): any {
-  if (!db) {
+  if (!initialized) {
     throw new Error('Storage not initialized. Call initStorage first.');
   }
+  
+  if (!isBrowser) {
+    console.log('Attempted to use storage in server-side context');
+    return {
+      get: async () => null,
+      set: async () => null,
+      add: async () => null,
+      update: async () => null,
+      delete: async () => null,
+      cget: async () => [],
+    };
+  }
+  
+  if (!db) {
+    throw new Error('Storage not available. Browser storage may be disabled.');
+  }
+  
   return db;
 }
 
