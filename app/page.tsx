@@ -239,8 +239,8 @@ export default function Home() {
                   {isLoading ? (
                     <div className="text-sm text-muted-foreground">Loading tags...</div>
                   ) : popularTags.length > 0 ? (
-                    popularTags.map(tag => (
-                      <TagBadge key={tag.name} name={tag.name} count={tag.count || 0} />
+                    popularTags.map((tag, index) => (
+                      <TagBadge key={`tag-${tag.name}-${index}`} name={tag.name} count={tag.count || 0} />
                     ))
                   ) : (
                     <div className="text-sm text-muted-foreground">No tags found</div>

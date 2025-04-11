@@ -51,9 +51,9 @@ export default function TagsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tags.map((tag) => (
+            {tags.map((tag, index) => (
               <Link 
-                key={tag.name || tag.id} 
+                key={`tag-item-${tag.name || tag.id}-${index}`} 
                 href={`/tags/${tag.name || tag.id}`}
                 className="p-4 border rounded-lg hover:bg-accent transition-colors"
               >
