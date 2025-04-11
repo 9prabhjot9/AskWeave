@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowUp, ArrowDown, Check, MessageSquare, Award, CheckCircle } from "lucide-react";
+import { ArrowUp, ArrowDown, Check, MessageSquare, Award, CheckCircle, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,7 +25,7 @@ export default function QuestionDetailPage() {
   const { id } = useParams();
   const router = useRouter();
   const { getQuestion, answerQuestion, voteOnContent, acceptAnswer, isLoading, error } = useQAContract();
-  const { isConnected, walletAddress } = useWallet();
+  const { isConnected, walletAddress, connectWallet } = useWallet();
   const [question, setQuestion] = useState<any>(null);
   const [answers, setAnswers] = useState<AnswerType[]>([]);
   const [answerContent, setAnswerContent] = useState("");
@@ -318,31 +318,42 @@ export default function QuestionDetailPage() {
             <Separator className="my-4" />
 
             {/* Answer form */}
-            <div className="pt-4">
-              <h3 className="text-xl font-semibold mb-4">Your Answer</h3>
+            <div className="mt-8 pt-8 border-t">
+              <h2 className="text-xl font-semibold mb-4">Your Answer</h2>
+              
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 rounded-lg mb-6">
+                <h3 className="font-medium text-blue-800 dark:text-blue-300 flex items-center">
+                  <Database className="h-5 w-5 mr-2" />
+                  Arweave Storage Enabled
+                </h3>
+                <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
+                  Your answer will be permanently stored on the Arweave blockchain.
+                  Make sure you have ArConnect wallet installed and connected.
+                </p>
+              </div>
+              
+              <Textarea
+                value={answerContent}
+                onChange={(e) => setAnswerContent(e.target.value)}
+                placeholder="Write your answer here..."
+                className="min-h-[200px] mb-4"
+                disabled={isSubmitting || showSuccess}
+              />
+              
               {isConnected ? (
-                <div className="space-y-4">
-                  <Textarea
-                    placeholder="Write your answer here..."
-                    className="min-h-[200px]"
-                    value={answerContent}
-                    onChange={(e) => setAnswerContent(e.target.value)}
-                    disabled={showSuccess}
-                  />
-                  <Button 
-                    onClick={handleAnswerSubmit} 
-                    disabled={!answerContent.trim() || isSubmitting || showSuccess}
-                    className={showSuccess ? "opacity-50" : ""}
-                  >
-                    {isSubmitting && !showSuccess ? "Submitting..." : showSuccess ? "Posted Successfully" : "Post Your Answer"}
-                  </Button>
-                </div>
+                <Button 
+                  onClick={handleAnswerSubmit} 
+                  disabled={!answerContent.trim() || isSubmitting || showSuccess}
+                  className={showSuccess ? "opacity-50" : ""}
+                >
+                  {isSubmitting && !showSuccess ? "Submitting..." : showSuccess ? "Posted Successfully" : "Post Your Answer"}
+                </Button>
               ) : (
-                <div className="p-4 bg-muted rounded-lg text-center">
+                <div className="p-4 bg-muted rounded-lg text-center mb-4">
                   <p className="mb-4">You need to connect your wallet to answer this question.</p>
-                  <Link href="/connect" className="text-primary hover:underline">
+                  <Button onClick={() => connectWallet && connectWallet()} variant="default">
                     Connect Wallet
-                  </Link>
+                  </Button>
                 </div>
               )}
             </div>

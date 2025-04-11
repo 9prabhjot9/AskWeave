@@ -42,7 +42,8 @@ const PERMISSIONS: PermissionType[] = [
   'ACCESS_ADDRESS',
   'ACCESS_PUBLIC_KEY',
   'SIGN_TRANSACTION',
-  'SIGNATURE'
+  'SIGNATURE',
+  'DISPATCH'
 ];
 
 // Wallet info interface

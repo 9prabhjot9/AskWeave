@@ -9,7 +9,7 @@ import { useQAContract } from "@/hooks/useQAContract"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
-import { CheckCircle } from "lucide-react"
+import { CheckCircle, Database } from "lucide-react"
 
 export default function AskQuestionPage() {
   const [title, setTitle] = useState("")
@@ -99,6 +99,17 @@ export default function AskQuestionPage() {
         
         <div className="max-w-3xl mx-auto">
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 rounded-lg mb-6">
+              <h3 className="font-medium text-blue-800 dark:text-blue-300 flex items-center">
+                <Database className="h-5 w-5 mr-2" />
+                Arweave Storage Enabled
+              </h3>
+              <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
+                Your question will be permanently stored on the Arweave blockchain. 
+                Make sure you have ArConnect wallet installed and connected.
+              </p>
+            </div>
+            
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input

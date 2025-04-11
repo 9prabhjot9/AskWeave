@@ -72,20 +72,17 @@ export function useWallet(): UseWalletReturn {
           description: `Connected with ArConnect: ${address.substring(0, 6)}...${address.substring(address.length - 4)}`,
         });
       } else {
-        // Use mock implementation in development or when ArConnect is not available
-        const mockAddress = 'Ar' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        setWalletAddress(mockAddress);
-        setIsConnected(true);
-        
-        // Store in localStorage for persistence
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('mockWalletAddress', mockAddress);
-        }
-
+        // Show installation prompt for ArConnect
         toast({
-          title: 'Mock Wallet Connected',
-          description: `ArConnect not available. Connected with mock address: ${mockAddress.substring(0, 6)}...${mockAddress.substring(mockAddress.length - 4)}`,
+          title: "ArConnect Required",
+          description: "Please install ArConnect wallet extension to connect to Arweave mainnet.",
+          variant: "destructive",
         });
+        
+        // Open ArConnect install page after delay
+        setTimeout(() => {
+          window.open("https://www.arconnect.io", "_blank");
+        }, 3000);
       }
     } catch (err: any) {
       console.error('Error connecting wallet:', err);
