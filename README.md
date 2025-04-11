@@ -2,7 +2,7 @@
 
 ![AskWeave Banner](public/banner.png)
 
-AskWeave is a revolutionary decentralized Q&A platform built on the Arweave blockchain, offering permanent storage, censorship resistance, and true ownership of content. Powered by WeaveDB and ArConnect, it brings the future of decentralized knowledge sharing to life.
+AskWeave is a revolutionary decentralized Q&A platform built on the Arweave blockchain, offering permanent storage, censorship resistance, and true ownership of content. Built using the official Arweave documentation and tools, it brings the future of decentralized knowledge sharing to life.
 
 ## 🌟 Key Features
 
@@ -83,19 +83,14 @@ npm run deploy-weavedb
 
 ## 📚 Documentation
 
-### Architecture
-- [Smart Contract Design](docs/contracts.md)
-- [Database Schema](docs/database.md)
-- [API Documentation](docs/api.md)
-
-### Guides
-- [Contributing Guide](CONTRIBUTING.md)
-- [Security Best Practices](docs/security.md)
-- [Performance Optimization](docs/performance.md)
+Built using the official Arweave documentation:
+- [Arweave Official Documentation](https://arweave.org)
+- [Arweave Cookbook](https://cookbook.arweave.dev)
+- [AO Cookbook](https://cookbook_ao.arweave.dev/welcome/index.html)
 
 ## 🤝 Contributing
 
-We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+I welcome contributions! Please read the [Contributing Guide](CONTRIBUTING.md) for details on the code of conduct and the process for submitting pull requests.
 
 ## 📄 License
 
@@ -103,26 +98,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Arweave team for the permanent storage layer
-- WeaveDB team for the decentralized database
-- ArConnect team for the wallet integration
-- All our contributors and community members
+- [Arweave](https://arweave.org) for the permanent storage layer
+- [Arweave Cookbook](https://cookbook.arweave.dev) for comprehensive development guides
+- [AO Cookbook](https://cookbook_ao.arweave.dev/welcome/index.html) for compute system documentation
+- The amazing open-source community for their tools and libraries
 
-## 🌐 Links
 
-- [Website](https://askweave.xyz)
-- [Documentation](https://docs.askweave.xyz)
-- [Twitter](https://twitter.com/askweave)
-- [Discord](https://discord.gg/askweave)
-- [GitHub](https://github.com/yourusername/askweave)
+---
 
-## 📊 Statistics
 
-- 100% uptime since launch
-- 10,000+ questions answered
-- 50,000+ blockchain transactions
-- 1,000+ active users
-- 99.9% transaction success rate
+
+
 
 ---
 
