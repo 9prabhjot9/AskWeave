@@ -13,19 +13,19 @@ echo "Setting environment variables..."
 export NODE_OPTIONS="--max-old-space-size=4096"
 export NEXT_TELEMETRY_DISABLED=1
 
-# Build the project with standalone output
-echo "Building for production..."
+# Build the project with static export
+echo "Building for production with static export..."
 npm run build
 
 # Verify the build
-if [ -d ".next" ]; then
-  echo "Build successful! Build artifacts are in the .next directory."
+if [ -d "out" ]; then
+  echo "Build successful! Static files are in the 'out' directory."
+  
+  # Add .nojekyll file for GitHub Pages (if deploying there)
+  touch out/.nojekyll
+  
+  echo "Production build completed successfully!"
 else
-  echo "Build failed. Check logs for errors."
+  echo "Build failed or out directory not found. Check logs for errors."
   exit 1
-fi
-
-# Add .nojekyll file for GitHub Pages (if deploying there)
-touch .next/.nojekyll
-
-echo "Production build completed successfully!" 
+fi 
