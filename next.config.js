@@ -3,6 +3,13 @@ const withTM = require('next-transpile-modules')(['eccrypto', 'secp256k1', 'coff
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Enable static exports
+  output: 'export',
+  // Disable image optimization for static export
+  images: {
+    unoptimized: true,
+  },
+  // Disable server-side features that aren't compatible with static export
   webpack: (config, { isServer }) => {
     // Fix for native modules
     if (!isServer) {
