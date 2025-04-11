@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { useWallet } from './useWallet';
+import { Collections } from '@/lib/arweave/weavedb';
 import { 
   initWeaveDB, 
   getDocument, 
@@ -14,7 +15,7 @@ import {
 import { WEAVEDB_CONTRACT_ID } from '@/lib/arweave';
 
 // Return type for the hook
-interface UseWeaveDBReturn {
+export interface UseWeaveDBReturn {
   isInitialized: boolean;
   isLoading: boolean;
   error: string | null;

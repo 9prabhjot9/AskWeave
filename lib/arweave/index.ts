@@ -87,7 +87,7 @@ export default ArweaveService;
 
 // Export types
 export type QAContractState = State;
-export type { Question, Answer, Comment, Vote, User, Bounty, DaoProposal, DaoSettings, ContractState };
+export type { Question, Answer, Comment, Vote, User, Bounty, DaoProposal, DaoSettings };
 export type WalletInfo = { address: string; balance: string; isConnected: boolean };
 
 // Export Collections enum

@@ -18,16 +18,17 @@ export interface Question {
   title: string;
   content: string;
   author: string;
-  createdAt: number;
-  updatedAt: number;
+  timestamp: number;
   tags: string[];
-  voteCount: number;
-  upvotes: string[];
-  downvotes: string[];
-  viewCount: number;
   answerIds: string[];
+  voteCount: number;
+  bountyAmount: number;
+  bountyId?: string;
+  isClosed: boolean;
+  isAccepted: boolean;
   acceptedAnswerId?: string;
-  bountyAmount?: number;
+  viewCount: number;
+  commentIds: string[];
 }
 
 export interface Answer {

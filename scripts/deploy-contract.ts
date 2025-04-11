@@ -63,7 +63,7 @@ async function deployQAContract() {
     console.log('Deploying contract...');
     
     // Deploy the contract
-    const contractTxId = await warp.createContract.deploy({
+    const { contractTxId } = await warp.deploy({
       wallet,
       initState: JSON.stringify(contractInitialState),
       src: contractSrc,

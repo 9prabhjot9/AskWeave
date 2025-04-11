@@ -79,7 +79,7 @@ export default function QuestionsPage() {
                         answers={(question.answerIds?.length || 0)}
                         views={question.viewCount || 0}
                         bounty={question.bountyAmount || 0}
-                        timeAgo={formatDate(question.createdAt)}
+                        timeAgo={formatDate(question.timestamp)}
                         author={{
                           name: question.author?.substring(0, 10) || "Anonymous",
                           reputation: 0,
