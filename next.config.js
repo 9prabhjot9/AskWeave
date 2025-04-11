@@ -1,4 +1,4 @@
-const withTM = require('next-transpile-modules')(['eccrypto', 'secp256k1', 'vm2', 'coffee-script']);
+const withTM = require('next-transpile-modules')(['eccrypto', 'secp256k1', 'coffee-script']);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -18,16 +18,30 @@ const nextConfig = {
         http: require.resolve('stream-http'),
         https: require.resolve('https-browserify'),
         os: require.resolve('os-browserify'),
+        vm: require.resolve('vm-browserify'),
       };
     }
     
     // Exclude problematic dependencies from being bundled
-    config.externals = [...(config.externals || []), 'weavedb-sdk', 'weavedb-sdk-node', 'eccrypto'];
+    config.externals = [
+      ...(config.externals || []),
+      'weavedb-sdk',
+      'weavedb-sdk-node',
+      'eccrypto',
+      'vm2'
+    ];
 
     config.module.rules.push({
       test: /\.css$/,
       use: ['style-loader', 'css-loader', 'postcss-loader'],
     });
+
+    // Add rule to handle vm2
+    config.module.rules.push({
+      test: /node_modules\/vm2/,
+      use: 'null-loader'
+    });
+
     return config;
   },
   
