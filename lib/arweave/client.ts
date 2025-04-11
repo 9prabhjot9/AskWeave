@@ -1,7 +1,7 @@
 import Arweave from 'arweave';
 
 // Initialize Arweave client
-// Using the main Arweave gateway
+// Using the main Arweave gateway for browser compatibility
 const arweave = Arweave.init({
   host: 'arweave.net',
   port: 443,
@@ -19,8 +19,13 @@ export async function getWalletAddress(publicKey: string): Promise<string> {
 
 // Helper function to get wallet balance
 export async function getWalletBalance(address: string): Promise<string> {
-  const winstonBalance = await arweave.wallets.getBalance(address);
-  // Convert from winston (smallest unit) to AR
-  const arBalance = arweave.ar.winstonToAr(winstonBalance);
-  return arBalance;
+  try {
+    const winstonBalance = await arweave.wallets.getBalance(address);
+    // Convert from winston (smallest unit) to AR
+    const arBalance = arweave.ar.winstonToAr(winstonBalance);
+    return arBalance;
+  } catch (error) {
+    console.error('Error getting wallet balance:', error);
+    return '0';
+  }
 } 

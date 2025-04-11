@@ -37,7 +37,7 @@ export function QuestionCard({ question, showActions = true }: QuestionCardProps
         {question.tags && question.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {question.tags.map((tag) => (
-              <TagBadge key={tag} tag={tag} />
+              <TagBadge key={tag} name={tag} />
             ))}
           </div>
         )}

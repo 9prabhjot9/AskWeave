@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "dev:clean": "npm run setup && next dev",
-    "build": "next build",
+    "build": "NODE_OPTIONS=--max_old_space_size=4096 next build",
+    "build:skip-types": "NODE_OPTIONS=--max_old_space_size=4096 NEXT_SKIP_TYPE_CHECK=true next build",
+    "build:static": "NODE_OPTIONS=--max_old_space_size=4096 next build && next export",
+    "build:vercel": "NODE_OPTIONS=--max_old_space_size=4096 next build",
     "start": "next start",
     "lint": "next lint",
     "setup": "node scripts/setup.js",
@@ -50,7 +53,7 @@
     "@radix-ui/react-toggle-group": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.6",
     "arconnect": "^0.4.2",
-    "arweave": "^1.15.7",
+    "arweave": "^1.14.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
@@ -92,6 +95,7 @@
     "css-loader": "^7.1.2",
     "https-browserify": "^1.0.0",
     "next-transpile-modules": "^10.0.1",
+    "null-loader": "^4.0.1",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "postcss": "^8.5.3",
@@ -103,7 +107,8 @@
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
     "typescript": "^5",
-    "url": "^0.11.4"
+    "url": "^0.11.4",
+    "vm-browserify": "^1.1.2"
   },
   "resolutions": {
     "arweave": "1.14.4",

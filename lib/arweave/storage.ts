@@ -1,54 +1,30 @@
-import { WebBundlr } from "@bundlr-network/client";
 import { Collections } from '../storage';
 import arweave from "./client";
 
 // Use the provided wallet address
 const WALLET_ADDRESS = "0fC-uw2gmuucfowm2GGM8NFYjiBIcwFXG-QHsCRvS28";
 
-// Bundlr node URL
-const BUNDLR_NODE_URL = "https://node1.bundlr.network";
-
-// Initialize bundlr instance
-let bundlrInstance: WebBundlr | null = null;
-
-/**
- * Initialize Bundlr for Arweave uploads
- */
-async function initBundlr(): Promise<WebBundlr> {
-  if (bundlrInstance) return bundlrInstance;
-  
-  // Using wallet as JWK
-  try {
-    const bundlr = new WebBundlr(BUNDLR_NODE_URL, "arweave", window.arweaveWallet);
-    await bundlr.ready();
-    bundlrInstance = bundlr;
-    return bundlr;
-  } catch (error) {
-    console.error("Error initializing Bundlr:", error);
-    throw error;
-  }
-}
-
 /**
  * Upload question data to Arweave
- * This function handles storing question data permanently on Arweave via Bundlr
+ * This function handles storing question data permanently on Arweave
  */
 export async function storeQuestionOnArweave(questionData: any): Promise<string | null> {
   try {
     console.log('Storing question data on Arweave:', questionData);
     
-    // In a browser environment, use real Arweave via Bundlr
+    // Check if ArConnect is available
     if (typeof window !== 'undefined' && 'arweaveWallet' in window) {
-      // Initialize bundlr
-      const bundlr = await initBundlr();
-      
-      // Store data on Arweave
-      return await uploadToArweave(questionData, bundlr, Collections.QUESTIONS);
-    } else {
-      // Fall back to mock implementation if needed
-      console.log('Using mock implementation for Arweave storage');
-      return await mockArweaveUpload(Collections.QUESTIONS, questionData);
+      try {
+        // Create transaction with ArConnect
+        return await uploadWithArConnect(questionData, Collections.QUESTIONS);
+      } catch (error) {
+        console.error('Error with ArConnect upload, falling back to mock:', error);
+      }
     }
+    
+    // Fallback to mock implementation
+    console.log('Using mock implementation for Arweave storage');
+    return await mockArweaveUpload(Collections.QUESTIONS, questionData);
   } catch (error) {
     console.error('Error storing question on Arweave:', error);
     return null;
@@ -57,28 +33,69 @@ export async function storeQuestionOnArweave(questionData: any): Promise<string 
 
 /**
  * Upload answer data to Arweave
- * This function handles storing answer data permanently on Arweave via Bundlr
+ * This function handles storing answer data permanently on Arweave
  */
 export async function storeAnswerOnArweave(answerData: any): Promise<string | null> {
   try {
     console.log('Storing answer data on Arweave:', answerData);
     
-    // In a browser environment, use real Arweave via Bundlr
+    // Check if ArConnect is available
     if (typeof window !== 'undefined' && 'arweaveWallet' in window) {
-      // Initialize bundlr
-      const bundlr = await initBundlr();
-      
-      // Store data on Arweave
-      return await uploadToArweave(answerData, bundlr, Collections.ANSWERS);
-    } else {
-      // Fall back to mock implementation if needed
-      console.log('Using mock implementation for Arweave storage');
-      return await mockArweaveUpload(Collections.ANSWERS, answerData);
+      try {
+        // Create transaction with ArConnect
+        return await uploadWithArConnect(answerData, Collections.ANSWERS);
+      } catch (error) {
+        console.error('Error with ArConnect upload, falling back to mock:', error);
+      }
     }
+    
+    // Fallback to mock implementation
+    console.log('Using mock implementation for Arweave storage');
+    return await mockArweaveUpload(Collections.ANSWERS, answerData);
   } catch (error) {
     console.error('Error storing answer on Arweave:', error);
     return null;
   }
+}
+
+/**
+ * Upload data with ArConnect directly
+ */
+async function uploadWithArConnect(data: any, collection: string): Promise<string> {
+  // Add metadata
+  const dataWithMetadata = {
+    ...data,
+    _arweaveWallet: WALLET_ADDRESS,
+    _arweaveTimestamp: Date.now(),
+    _collection: collection
+  };
+  
+  // Convert data to JSON string
+  const jsonData = JSON.stringify(dataWithMetadata);
+  
+  // Create transaction
+  const tx = await arweave.createTransaction({ data: jsonData });
+  
+  // Add tags
+  tx.addTag('Content-Type', 'application/json');
+  tx.addTag('App-Name', 'Decentralized-QA');
+  tx.addTag('App-Version', '1.0.0');
+  tx.addTag('Collection', collection);
+  tx.addTag('Wallet-Address', WALLET_ADDRESS);
+  
+  // Sign the transaction with ArConnect
+  await window.arweaveWallet.sign(tx);
+  
+  // Submit the transaction
+  const uploader = await arweave.transactions.getUploader(tx);
+  
+  while (!uploader.isComplete) {
+    await uploader.uploadChunk();
+    console.log(`Uploading... ${uploader.pctComplete}% complete`);
+  }
+  
+  console.log(`Data uploaded to Arweave with ID: ${tx.id}`);
+  return tx.id;
 }
 
 /**
@@ -108,59 +125,6 @@ async function mockArweaveUpload(collection: string, data: any): Promise<string>
   }
   
   return mockTxId;
-}
-
-/**
- * Upload data to Arweave via Bundlr
- */
-async function uploadToArweave(data: any, bundlr: WebBundlr, collection: string): Promise<string> {
-  try {
-    // Add metadata
-    const dataWithMetadata = {
-      ...data,
-      _arweaveWallet: WALLET_ADDRESS,
-      _arweaveTimestamp: Date.now(),
-      _collection: collection
-    };
-    
-    // Convert data to JSON string
-    const jsonData = JSON.stringify(dataWithMetadata);
-    
-    // Check if user has enough funds
-    const price = await bundlr.getPrice(Buffer.byteLength(jsonData));
-    const balance = await bundlr.getLoadedBalance();
-    
-    console.log(`Upload price: ${bundlr.utils.unitConverter(price)} AR`);
-    console.log(`Your balance: ${bundlr.utils.unitConverter(balance)} AR`);
-    
-    if (balance.isLessThan(price)) {
-      throw new Error(`Not enough funds to upload. Need ${bundlr.utils.unitConverter(price)} AR but have ${bundlr.utils.unitConverter(balance)} AR`);
-    }
-    
-    // Create the transaction
-    const tx = bundlr.createTransaction(jsonData, {
-      tags: [
-        { name: 'Content-Type', value: 'application/json' },
-        { name: 'App-Name', value: 'Decentralized-QA' },
-        { name: 'App-Version', value: '1.0.0' },
-        { name: 'Collection', value: collection },
-        { name: 'Wallet-Address', value: WALLET_ADDRESS }
-      ]
-    });
-    
-    // Sign the transaction
-    await tx.sign();
-    
-    // Upload the transaction
-    const response = await tx.upload();
-    
-    console.log(`Data uploaded to Arweave with ID: ${response.id}`);
-    
-    return response.id;
-  } catch (error) {
-    console.error('Error uploading to Arweave:', error);
-    throw error;
-  }
 }
 
 /**
