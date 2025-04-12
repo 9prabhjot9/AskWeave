@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import ArweaveProvider from '@/lib/arweave/ArweaveProvider'
 import { DebugPanel } from '@/components/debug-panel'
+import { Shell } from '@/components/shell'
 
 // Initialize the Inter font with minimal configuration
 const inter = Inter({ subsets: ['latin'] })
@@ -25,7 +26,7 @@ export default function RootLayout({
         {/* Add a base tag to ensure static assets are loaded correctly */}
         <base href="/" />
       </head>
-      <body className="antialiased">
+      <body className={`antialiased ${inter.className}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -33,7 +34,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ArweaveProvider>
-            {children}
+            <Shell>
+              {children}
+            </Shell>
             <Toaster />
             <DebugPanel />
           </ArweaveProvider>

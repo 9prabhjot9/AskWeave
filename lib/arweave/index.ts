@@ -35,7 +35,9 @@ import {
 } from './weavedb';
 
 // Import types from the contract
-import type { State, Question, Answer, Comment, Vote, User, Bounty, DaoProposal, DaoSettings } from './contracts/qa-contract';
+import type { State, Answer, Comment, Vote, User, Bounty, DaoProposal, DaoSettings } from './contracts/qa-contract';
+// Import our extended Question type
+import type { Question } from './types';
 
 // Q&A contracts
 export const QA_CONTRACT_ID = process.env.NEXT_PUBLIC_WEAVEDB_CONTRACT_TX_ID || '';
