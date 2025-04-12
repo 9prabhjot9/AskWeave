@@ -4,6 +4,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import ArweaveProvider from '@/lib/arweave/ArweaveProvider'
+import { DebugPanel } from '@/components/debug-panel'
 
 // Initialize the Inter font with minimal configuration
 const inter = Inter({ subsets: ['latin'] })
@@ -20,6 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Add a base tag to ensure static assets are loaded correctly */}
+        <base href="/" />
+      </head>
       <body className="antialiased">
         <ThemeProvider
           attribute="class"
@@ -30,6 +35,7 @@ export default function RootLayout({
           <ArweaveProvider>
             {children}
             <Toaster />
+            <DebugPanel />
           </ArweaveProvider>
         </ThemeProvider>
       </body>

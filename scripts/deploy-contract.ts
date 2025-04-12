@@ -80,6 +80,16 @@ async function deployQAContract() {
     
     console.log(`Contract ID saved to .env.local file.`);
     
+    // Try adding this to your wallet connection code
+    window.arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGN_TRANSACTION', 'ACCESS_PUBLIC_KEY'])
+      .then(() => console.log("Wallet connected with full permissions"))
+      .catch(err => console.error("Wallet connection error:", err));
+    
+    fetch('https://arweave.net/info')
+      .then(res => res.json())
+      .then(data => console.log("Arweave gateway status:", data))
+      .catch(err => console.error("Arweave gateway error:", err));
+    
     return contractTxId;
   } catch (error) {
     console.error('Error deploying contract:', error);

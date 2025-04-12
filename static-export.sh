@@ -29,7 +29,8 @@ const nextConfig = {
   output: 'export',
   images: { unoptimized: true },
   trailingSlash: true,
-  // Disable dynamic route generation
+  // Disable client-side routing to use full page reloads for better static export compatibility
+  skipMiddlewareUrlNormalize: true,
   skipTrailingSlashRedirect: true,
   webpack: (config, { isServer }) => {
     // Fix for modules that only work in Node.js
@@ -41,7 +42,6 @@ const nextConfig = {
     }
     return config;
   },
-  // Disable dynamic route handling
   experimental: {
     appDocumentPreloading: true,
     optimizeCss: true,
@@ -72,6 +72,25 @@ echo "Restoring dynamic routes..."
 if [ -d "app/questions/_id_disabled" ]; then
   mv app/questions/_id_disabled app/questions/[id]
 fi
+
+# Create HTML redirect for the questions/id path
+mkdir -p out/questions/id
+cat > out/questions/id/index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // Redirect to questions page to avoid 404
+    window.location.href = "/questions/";
+  </script>
+</head>
+<body>
+  <p>Redirecting to questions page...</p>
+</body>
+</html>
+EOF
 
 # Check if out directory exists
 if [ -d "out" ]; then

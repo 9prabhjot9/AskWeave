@@ -22,7 +22,7 @@ interface AnswerType {
 }
 
 export default function QuestionDetailPage() {
-  const { id } = useParams();
+  const params = useParams();
   const router = useRouter();
   const { getQuestion, answerQuestion, voteOnContent, acceptAnswer, isLoading, error } = useQAContract();
   const { isConnected, walletAddress, connectWallet } = useWallet();
@@ -32,11 +32,19 @@ export default function QuestionDetailPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Fetch question details
+  // Add this useEffect for debugging
   useEffect(() => {
+    console.log("Question Detail Page - Params:", params);
+    // If no ID, redirect to questions page
+    if (!params?.id) {
+      console.error("No question ID found in params");
+      router.push("/questions");
+      return;
+    }
+
     const loadQuestion = async () => {
       try {
-        const data = await getQuestion(id as string);
+        const data = await getQuestion(params.id as string);
         if (data) {
           setQuestion(data);
           setAnswers(data.answers || []);
@@ -46,10 +54,10 @@ export default function QuestionDetailPage() {
       }
     };
 
-    if (id) {
+    if (params.id) {
       loadQuestion();
     }
-  }, [id, getQuestion]);
+  }, [params, router]);
 
   // Handle submitting an answer
   const handleAnswerSubmit = async () => {
@@ -57,7 +65,7 @@ export default function QuestionDetailPage() {
     
     setIsSubmitting(true);
     try {
-      const answerId = await answerQuestion(id as string, answerContent);
+      const answerId = await answerQuestion(params.id as string, answerContent);
       if (answerId) {
         // Show success animation before redirecting
         setShowSuccess(true);
@@ -80,7 +88,7 @@ export default function QuestionDetailPage() {
     try {
       await voteOnContent(targetId, targetType, voteType);
       // Refresh the question data
-      const updatedQuestion = await getQuestion(id as string);
+      const updatedQuestion = await getQuestion(params.id as string);
       setQuestion(updatedQuestion);
       setAnswers(updatedQuestion.answers || []);
     } catch (error) {
@@ -93,9 +101,9 @@ export default function QuestionDetailPage() {
     if (!isConnected || !question || question.author !== walletAddress) return;
     
     try {
-      await acceptAnswer(id as string, answerId);
+      await acceptAnswer(params.id as string, answerId);
       // Refresh the question data
-      const updatedQuestion = await getQuestion(id as string);
+      const updatedQuestion = await getQuestion(params.id as string);
       setQuestion(updatedQuestion);
       setAnswers(updatedQuestion.answers || []);
     } catch (error) {

@@ -148,6 +148,7 @@ export default function Home() {
                   <li>
                     <Link
                       href="/questions"
+                      prefetch={false}
                       className="flex items-center px-3 py-2 rounded-md text-foreground hover:bg-accent"
                     >
                       <svg
